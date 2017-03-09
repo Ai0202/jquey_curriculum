@@ -17,10 +17,11 @@
     </div>
     <div class="search">
       <div class="search__text">
-        <input type="text" id="js-search-word" class="search__text__input" placeholder="検索する">
+        <input type="text" id="js-search-word" class="search__text__input" placeholder="検索する" required>
       </div>
       <button id="js-search-button" class="search__btn">検索する</button>
     </div>
+    <p class="msg"></p>
     <ul class="lists"></ul>
   </div>
 </div>
@@ -51,19 +52,66 @@
 // http://qiita.com/marumaru8228/items/65fc684383b096f0e548
 //
 //
-  // $.ajax({
-  //   url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-  //   type: 'GET',
-  //   datatype: 'json',
-  //   data: {
-  //     // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
-  //     applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
-  //     booksGenreId: '001'
-  //   },
-  // }).done(function(data) {
-  //   // この中にデータ取得後の動きを記述していきます。
-  // });
-//
+$(function() {
+    var $msg = $('.msg');
+    var val = "";
+    var lists = $('.lists');
+
+    $('#js-search-button').on('click', function() {
+        val = $('#js-search-word').val();
+        if (!val) {
+            alert('検索ボックスが空欄です。');
+            return;
+        } else {
+            $msg.text('');
+            lists.find('li').remove(); //存在する場合のみ処理をするようにする
+            ajax();
+        }
+    });
+
+        function ajax() {
+            $.ajax({
+              url:'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+              type: 'GET',
+              datatype: 'json',
+              data: {
+                // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
+                applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
+                booksGenreId: '001', //本のみ表示
+                hits: 20,
+                page: 1,
+                keyword: val
+              }
+            })
+            .done(function(data) {
+                if (data.Items.length === 0) {
+                    $msg.text('検索結果が0件でした。別のキーワードで検索して下さい。');
+                } else {
+                    getData(data);
+                }
+            })
+            .fail(function(err) {
+                alert('サーバーエラー。管理者に問い合わせてください。');
+            });
+        }
+
+        function getData(data) {
+            data.Items.forEach(function(item) {
+                var template =
+                '<li class="lists__item">' +
+                    '<div class="lists__item__inner">' +
+                        '<a href="' + item.Item.itemUrl + '" class="lists__item__link" target="_blank">' +
+                        '<img src="'+ item.Item.largeImageUrl +'" class="lists__item__img" alt="">' +
+                        '<p class="lists__item__detail">作品名：'+ "　" + item.Item.title +'</p>' +
+                        '<p class="lists__item__detail">作者　：'+ "　" + item.Item.author +'</p>' +
+                        '<p class="lists__item__detail">出版社：'+ "　" + item.Item.publisherName +'</p>' +
+                        '</a>'
+                    '</div>'
+                '</li>'
+                lists.append(template);
+            });
+        }
+});
 </script>
 </body>
 </html>
