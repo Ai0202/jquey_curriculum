@@ -1,0 +1,39 @@
+<!-- $ajax( {
+    url: //どこのurlをなげるか　楽天ブックス
+    type://'get or post'
+    datatype: //json データフォーマット jsとの親和性が高い
+    data: {
+        applecationId: //どこの誰か判断するために実施したか。
+        hid: //検索結果の上位何件かを表示するか　20件
+        page: //何ページで表現するか　1page
+        keyword: //どのキーワードに対して表示させるか。 ユーザーが検索したワード
+    }
+});
+.done(function(data) {
+    console.log(data);
+})
+.faile(function(error) {
+    console.log(error);
+})
+
+１ formの中身が空ならajaxを実行させない。
+２ ajaxの検索結果が0だった場合、検索結果は0だったと表示させる
+3  通信が失敗したとき（faileのとき）
+　　ユーザーにわかるようにエラーを表示させる
+4　検索結果を表示させる
+
+作る順番
+・ajaxを実装
+    ボタンを押したときにajax実行
+    doneにconsole.logで結果を表示する
+    （多分）eachを使用して画面上に表示する
+
+・formになにも入力されてないときにエラー
+
+・検索結果がヒットしなければ、それを表示
+
+・Ajaxの通信に失敗したときのエラー
+
+過去の検索結果を消す処理
+
+-->

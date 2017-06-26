@@ -86,6 +86,7 @@ $(function() {
             if (data.Items.length === 0) {
                 $msg.text('検索結果が0件でした。別のキーワードで検索して下さい。');
             } else {
+              console.log(data);
                 renderTemplate(data);
             }
         })
